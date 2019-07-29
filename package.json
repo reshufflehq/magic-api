@@ -1,0 +1,39 @@
+{
+  "name": "template-template",
+  "version": "0.1.1",
+  "private": true,
+  "dependencies": {
+    "@binaris/shift-babel-macro": "0.0.3",
+    "@binaris/shift-db": "^0.1.2",
+    "@binaris/shift-fetch-runtime": "0.0.2",
+    "@binaris/shift-local-proxy": "0.0.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "cypress": "^3.4.0"
+  }
+}
