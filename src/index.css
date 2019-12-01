@@ -1,8 +1,28 @@
 body {
+  font-family: sans-serif;
   margin: 0;
+}
+h1 {
+  background: rgb(6,46,65);
+  background: linear-gradient(-5deg, rgba(6,46,65,1) 0%, rgba(17,156,221,1) 100%);
+  border-color: #999;
+  border-style: solid;
+  border-width: 0 0 1px 0;
+  color: #fff;
+  font-size: 150%;
+  font-weight: 200;
+  margin: 0;
+  padding: 0.75em 0;
   text-align: center;
 }
-
-#root {
-  background-image: linear-gradient(to bottom right, #9300ff, #32a7fb);
+button {
+  background: #3f88c0;
+  border-radius: 0.33em;
+  border-width: 0;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.5em 1em;
+}
+button:active {
+  background: #387aad;
 }

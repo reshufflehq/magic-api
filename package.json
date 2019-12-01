@@ -1,15 +1,16 @@
 {
-  "name": "counter-hooks",
+  "name": "magic-api",
   "version": "0.1.2",
   "private": true,
   "dependencies": {
-    "@reshuffle/code-transform": "0.0.3",
-    "@reshuffle/db": "^0.5.3",
-    "@reshuffle/fetch-runtime": "0.0.5",
-    "@reshuffle/local-proxy": "^0.2.12",
-    "@reshuffle/server-function": "0.0.6",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "@reshuffle/code-transform": "latest",
+    "@reshuffle/db": "latest",
+    "@reshuffle/fetch-runtime": "latest",
+    "@reshuffle/local-proxy": "latest",
+    "@reshuffle/server-function": "latest",
+    "express": "^4.17.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "react-scripts": "3.0.1"
   },
   "scripts": {

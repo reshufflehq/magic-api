@@ -1,0 +1,42 @@
+.Endpoint {
+  border-color: #999;
+  border-style: solid;
+  border-width: 1px;
+  margin: 0 0 1em 0;
+}
+.Endpoint h2 {
+  background: #eee;
+  border-color: #999;
+  border-style: solid;
+  border-width: 0 0 1px 0;
+  color: #666;
+  font-size: 100%;
+  font-weight: 200;
+  margin: 0;
+  padding: 0.25em 0.5em;
+}
+.Endpoint h2 * {
+  outline: none;
+}
+.Endpoint h2 select {
+  margin-right: 1em;
+}
+.Endpoint h2 span {
+  vertical-align: -2px;
+}
+.Endpoint h2 input {
+  margin-left: 0.25em;
+}
+.Endpoint h2 button {
+  float: right;
+  margin-top: -1px;
+}
+.Endpoint .code {
+  font-family: monospace;
+  margin: 0.5em;
+}
+.Endpoint .code .editor {
+  display: inline-block;
+  min-height: 1em;
+  width: 100%;
+}

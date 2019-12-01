@@ -1,6 +1,6 @@
 {
-  "short_name": "Counter",
-  "name": "Counter Application Using React Hooks",
+  "short_name": "Magic API",
+  "name": "Magical API Generator",
   "icons": [
     {
       "src": "favicon.ico",
