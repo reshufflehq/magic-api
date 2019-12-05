@@ -1,0 +1,38 @@
+.Button {
+  background: #3f88c0;
+  border-radius: 0.33em;
+  border-width: 0;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.5em 1em;
+}
+.Button:active {
+  background: #387aad;
+}
+.Button:disabled {
+  background: #999;
+  color: #eee;
+}
+.Button.spinning {
+  background: #3f88c0;
+  color: #fff;
+}
+.Button.warn {
+  background: #900;
+}
+.Button.warn:active {
+  background: #700;
+}
+.Button.warn:disabled {
+  background: #999;
+  color: #eee;
+}
+.Button.warn.spinning {
+  background: #900;
+  color: #fff;
+}
+.Button .spinner {
+  font-size: 85%;
+  line-height: 90%;
+  margin-left: 0.5em;
+}

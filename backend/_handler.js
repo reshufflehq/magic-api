@@ -1,20 +1,24 @@
 import express from 'express';
 import { defaultHandler } from '@reshuffle/server-function';
 import * as db from '@reshuffle/db';
+import Route from './route';
 
 const app = express();
 
 app.all('/api/*', async (req, res) => {
-  const key = `@${req.method}:${req.path.substr(5)}`;
-  const ep = await db.get(key);
+  const start = Date.now();
+
+  const route = new Route(req);
+  const ep = await db.get(route.toKey());
   if (!ep) {
-    return res.status(404).send(`Not found: ${req.method} ${req.path}`);
+    return res.status(404).send(`Not found: ${route}`);
   }
-  console.log(`Serving ${req.method} ${req.path} => {`);
-  console.log(ep.code.split('\n').map(l => '  ' + l).join('\n'));
-  console.log('}');
+
   const f = new Function('req', 'res', ep.code);
-  return f.call(null, req, res);
+  f.call(null, req, res);
+
+  const elapsed = Date.now() - start;
+  console.log(`Served ${route} in ${elapsed}ms`);
 });
 
 app.use(defaultHandler);

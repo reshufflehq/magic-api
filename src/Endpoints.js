@@ -1,91 +1,164 @@
 import React, { useEffect, useState } from 'react';
+import Button from './Button';
 import Endpoint from './Endpoint';
 import '@reshuffle/code-transform/macro';
 import './Endpoints.css';
 
-/*
- * We can import backend functions into our code and call them like any
- * regular function. The only thing to note is that instead of returning
- * a value directly, these functions return a Promise() to the return value,
- * so make sure to use .then() or await to get the actual response.
- */
 import {
-  endpointsGet,
+  endpointsCreateUID,
+  endpointsList,
   endpointsSave,
+  endpointsDelete,
 } from '../backend/endpoints';
 
-export default function Endpoints() {
-  const [endpoints, setEndpoints] = useState();
-
-  /*
-   * endpoints is undefined when the component is first rendered. We use this
-   * to issue a call to the backend to get the endpoints list. Any backend
-   * function returns a Promise() which is resolved with the value
-   * returned from the backend.
-   *
-   * We issue the call to the backend inside useEffect(), so that it does
-   * not happen within the rendering stage of the component.
-   */
-  useEffect(() => {
-    if (endpoints === undefined) {
-      endpointsGet()
-
-        /*
-         * The backend returns the endpoints list. This value is undefined
-         * when the application is run for the first time, in which case
-         * we use the default value of an empty array.
-         */
-        .then(response => {
-          const eps = response.map(x => x.value);
-          eps.sort((a, b) => a.index - b.index);
-          setEndpoints(eps);
-        })
-
-        /*
-         * If the backend call generated an error, we set endpoints to null.
-         * This will cause the page to display a simple error string (see
-         * below).
-         */
-        .catch(() => setEndpoints(null));
-    }
-  });
-
-  /*
-   * We still need to check if endpoints is undefined in the rendering
-   * stage so that, the page will display this loading string until we
-   * get an actual endpoints list.
-   */
-  if (endpoints === undefined) {
-    return 'Loading...';
+class EP {
+  constructor(ep) {
+    this.uid = ep.uid;
+    this.method = ep.method || 'GET';
+    this.path = ep.path || '';
+    this.code = ep.code || '  return res.status(200).send(\'Ok\');';
   }
 
-  /*
-   * A null endpoints list indicates an error occurred while calling the
-   * backend. The page will simply display an error string in this case.
-   */
-  if (endpoints === null) {
+  equals(ep) {
+    return !ep ? false : (this.method === ep.method &&
+                          this.path === ep.path &&
+                          this.code === ep.code);
+  }
+
+  compare(ep) {
+    return this.uid - ep.uid;
+  }
+}
+
+const STATUS_INIT = {};
+const STATUS_LOADING = {};
+const STATUS_ERROR = {};
+const STATUS_IS_INIT = s => s === STATUS_INIT;
+const STATUS_IS_LOADING = s => s === STATUS_LOADING;
+const STATUS_IS_ERROR = s => s === STATUS_ERROR;
+const STATUS_IS_LOADED = s => (
+  s &&
+  !STATUS_IS_INIT(s) &&
+  !STATUS_IS_LOADING(s) &&
+  !STATUS_IS_ERROR(s)
+);
+
+export default function Endpoints(props) {
+  const [ saved, setSaved ] = useState(STATUS_INIT);
+  const [ endpoints, setEndpoints ] = useState();
+
+  useEffect(() => {
+    if (STATUS_IS_INIT(saved)) {
+      endpointsList()
+        .then(eps => {
+          const svs = {};
+          for (const ep of eps) {
+            svs[ep.uid] = new EP(ep);
+          };
+          setSaved(svs);
+        })
+        .catch(e => {
+          console.error(e);
+          props.showError('Error connecting to server. Please reload');
+          setSaved(STATUS_ERROR);
+        });
+      setSaved(STATUS_LOADING);
+    }
+    else if (STATUS_IS_LOADED(saved) && !endpoints) {
+      const eps = Object.values(saved);
+      eps.sort((a, b) => a.compare(b));
+      setEndpoints(eps);
+    }
+  }, [saved, endpoints, props]);
+
+  if (STATUS_IS_INIT(saved) || STATUS_IS_LOADING(saved) || !endpoints) {
+    return 'Loading...';
+  }
+  if (STATUS_IS_ERROR(saved)) {
     return 'Error';
   }
 
+  function serverError(e) {
+    console.error(e);
+    return props.showError('Error connecting to server. Please reload');
+  }
+
+  function findEndpointByUID(uid) {
+    return endpoints.findIndex(e => e.uid === uid);
+  }
+
   function handleChange(ep) {
-    const head = endpoints.slice(0, ep.index);
-    const tail = endpoints.slice(ep.index + 1);
-    setEndpoints(head.concat([ep], tail));
+    const index = findEndpointByUID(ep.uid);
+    if (index < 0) {
+      console.error(`handleChange(${ep.uid}): Endpint not found`);
+      return props.showError('Internal error. Please reload');
+    }
+
+    const head = endpoints.slice(0, index);
+    const tail = endpoints.slice(index + 1);
+    setEndpoints(head.concat([new EP(ep)], tail));
   }
 
-  function handleSave(ep) {
-    endpointsSave(ep)
-      .catch(() => setEndpoints(null));
+  async function handleSave(uid) {
+    const index = findEndpointByUID(uid);
+    if (index < 0) {
+      console.error(`handleSave(${uid}): Endpint not found`);
+      return props.showError('Internal error. Please reload');
+    }
+
+    const ep = endpoints[index];
+
+    try {
+      const error = await endpointsSave(ep);
+      if (error) {
+        console.error(`handleSave(${uid}): Server error`);
+        return props.showError(error);
+      }
+    } catch (e) {
+      return serverError(e);
+    }
+
+    saved[ep.uid] = ep;
+    handleChange(ep);
   }
 
-  function add() {
-    const ep = {
-      index: endpoints.length,
-      method: 'GET',
-      route: '',
-      code: '',
-    };
-    setEndpoints(endpoints.concat([ep]));
+  async function handleDelete(uid, event) {
+    const index = findEndpointByUID(uid);
+    if (index < 0) {
+      event.reset();
+      console.error(`handleDelete(${uid}): Endpint not found`);
+      return props.showError('Internal error. Please reload');
+    }
+
+    try {
+      if (saved[uid]) {
+        const error = await endpointsDelete(uid);
+        if (error) {
+          console.error(`handleDelete(${uid}): Server error`);
+          return props.showError(error);
+        }
+      }
+    } catch (e) {
+      return serverError(e);
+    } finally {
+      event.reset();
+    }
+
+    const head = endpoints.slice(0, index);
+    const tail = endpoints.slice(index + 1);
+    setEndpoints(head.concat(tail));
+  }
+
+  async function add(event) {
+    try {
+      const uid = await endpointsCreateUID();
+      const ep = new EP({ uid });
+      setEndpoints(endpoints.concat([ep]));
+    } catch (e) {
+      return serverError(e);
+    } finally {
+      event.reset();
+    }
   }
 
   return (
@@ -93,11 +166,13 @@ export default function Endpoints() {
       {endpoints.map((ep, i) =>
         <Endpoint key={i}
                   ep={ep}
+                  isSaved={ep.equals(saved[ep.uid])}
                   onChange={handleChange}
                   onSave={handleSave}
+                  onDelete={handleDelete}
         />
       )}
-      <button onClick={add}>Add Endpoint</button>
+      <Button onClick={add}>Add Endpoint</Button>
     </div>
   );
 }
