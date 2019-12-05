@@ -3,6 +3,12 @@ import { defaultHandler } from '@reshuffle/server-function';
 import * as db from '@reshuffle/db';
 import Route from './route';
 
+/////////////////////////////////////////////////////////////////////////////
+//                                                                         //
+//    If your API endpoints need npm packages, you can import them here    //
+//                                                                         //
+/////////////////////////////////////////////////////////////////////////////
+
 const app = express();
 
 app.all('/api/*', async (req, res) => {
