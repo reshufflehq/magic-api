@@ -18,7 +18,7 @@ export default function App() {
   return (
     <React.Fragment>
       <Errors errors={errors} onClear={clearErrors}/>
-      <h1><span role="img" aria-label="magic">💫</span> Magic API</h1>
+      <h1><span role="img" aria-label="magic">✨</span> Magic API</h1>
       <Endpoints showError={showError}/>
     </React.Fragment>
   );
