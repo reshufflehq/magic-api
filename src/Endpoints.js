@@ -118,7 +118,7 @@ export default function Endpoints(props) {
       return serverError(e);
     }
 
-    saved[ep.uid] = ep;
+    setSaved(Object.assign({}, saved, { [ep.uid]: ep }));
     handleChange(ep);
   }
 
