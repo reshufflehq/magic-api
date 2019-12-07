@@ -117,8 +117,10 @@ export default function Endpoint(props) {
 
   async function handleDelete(event) {
     setDeleting(true);
-    await props.onDelete(props.ep.uid, event);
-    setDeleting(false);
+    const deleted = await props.onDelete(props.ep.uid, event);
+    if (!deleted) {
+      setDeleting(false);
+    }
   }
 
   return (

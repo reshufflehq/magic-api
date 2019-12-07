@@ -127,7 +127,8 @@ export default function Endpoints(props) {
     if (index < 0) {
       event.reset();
       console.error(`handleDelete(${uid}): Endpint not found`);
-      return props.showError('Internal error. Please reload');
+      props.showError('Internal error. Please reload');
+      return false;
     }
 
     try {
@@ -135,11 +136,13 @@ export default function Endpoints(props) {
         const error = await endpointsDelete(uid);
         if (error) {
           console.error(`handleDelete(${uid}): Server error`);
-          return props.showError(error);
+          props.showError(error);
+          return false;
         }
       }
     } catch (e) {
-      return serverError(e);
+      serverError(e);
+      return false;
     } finally {
       event.reset();
     }
@@ -147,6 +150,7 @@ export default function Endpoints(props) {
     const head = endpoints.slice(0, index);
     const tail = endpoints.slice(index + 1);
     setEndpoints(head.concat(tail));
+    return true;
   }
 
   async function add(event) {
