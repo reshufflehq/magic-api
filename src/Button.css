@@ -1,4 +1,4 @@
-.Button {
+.button {
   background: #3f88c0;
   border-radius: 0.33em;
   border-width: 0;
@@ -6,32 +6,32 @@
   font-weight: 600;
   padding: 0.5em 1em;
 }
-.Button:active {
+.button:active {
   background: #387aad;
 }
-.Button:disabled {
+.button:disabled {
   background: #999;
   color: #eee;
 }
-.Button.spinning {
+.button.spinning {
   background: #3f88c0;
   color: #fff;
 }
-.Button.warn {
+.button.warn {
   background: #900;
 }
-.Button.warn:active {
+.button.warn:active {
   background: #700;
 }
-.Button.warn:disabled {
+.button.warn:disabled {
   background: #999;
   color: #eee;
 }
-.Button.warn.spinning {
+.button.warn.spinning {
   background: #900;
   color: #fff;
 }
-.Button .spinner {
+.button .spinner {
   font-size: 85%;
   line-height: 90%;
   margin-left: 0.5em;

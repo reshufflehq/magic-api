@@ -1,11 +1,11 @@
-.Endpoint {
+.endpoint {
   background: #fff;
   border-color: #999;
   border-style: solid;
   border-width: 1px;
   margin: 0 0 1em 0;
 }
-.Endpoint h2 {
+.endpoint .header {
   background: #ddd;
   border-color: #999;
   border-style: solid;
@@ -16,31 +16,31 @@
   margin: 0;
   padding: 0.25em 0.5em;
 }
-.Endpoint h2 * {
+.endpoint .header * {
   outline: none;
 }
-.Endpoint h2 select {
+.endpoint .header select {
   margin-right: 1em;
 }
-.Endpoint h2 span {
+.endpoint .header span {
   vertical-align: -2px;
 }
-.Endpoint h2 input {
+.endpoint .header input {
   margin-left: 0.25em;
 }
-.Endpoint h2 button {
+.endpoint .header button {
   float: right;
   margin-top: -1px;
 }
-.Endpoint .code {
+.endpoint .code {
   font-family: monospace;
   margin: 0.5em;
 }
-.Endpoint .code .editor {
+.endpoint .code .editor {
   display: inline-block;
   min-height: 1em;
   width: 100%;
 }
-.Endpoint .code .ace_hidden-cursors {
+.endpoint .code .ace_hidden-cursors {
   opacity: 0;
 }

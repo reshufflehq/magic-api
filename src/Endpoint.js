@@ -29,8 +29,21 @@ class Dispatcher {
 }
 
 export default function Endpoint(props) {
-  const [ editor, setEditor ] = useState();
-  const editorRef = useRef(null);
+  const [editor, setEditor] = useState();
+  const editorRef = useRef();
+  const editorOptions = {
+    mode: 'ace/mode/javascript',
+    showGutter: false,
+    highlightGutterLine: false,
+    highlightActiveLine: false,
+    showPrintMargin: false,
+    useSoftTabs: true,
+    tabSize: 2,
+    navigateWithinSoftTabs: false,
+    minLines: 1,
+    maxLines: 20,
+    newLineMode: 'unix',
+  };
 
   function applyChange(change) {
     props.onChange(Object.assign({}, props.ep, change));
@@ -48,19 +61,7 @@ export default function Endpoint(props) {
     const element = editorRef.current;
     if (!element.id) {
       element.id = `editor-${props.ep.uid}`;
-      const ed = global.ace.edit(element.id, {
-        mode: 'ace/mode/javascript',
-        showGutter: false,
-        highlightGutterLine: false,
-        highlightActiveLine: false,
-        showPrintMargin: false,
-        useSoftTabs: true,
-        tabSize: 2,
-        navigateWithinSoftTabs: false,
-        minLines: 1,
-        maxLines: 20,
-        newLineMode: 'unix',
-      });
+      const ed = global.ace.edit(element.id, editorOptions);
       ed.insert(props.ep.code);
       ed.moveCursorTo(0, 0);
 
@@ -92,16 +93,16 @@ export default function Endpoint(props) {
         editor.removeChangeListener(handleCodeChange);
       }
     };
-  }, [editor, props]);
+  }, [editor, props, editorOptions]);
 
-  const [ saving, setSaving ] = useState(false);
-  const [ deleting, setDeleting ] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
-  function canSave() {
-    return !deleting &&
-           !props.isSaved &&
-           /^\/api\/[\w\-.]+(\/[\w\-.]+)*$/.test(props.ep.path) &&
-           0 < props.ep.code.trim().length;
+  function saveDisabled() {
+    return deleting ||
+           props.isSaved ||
+           !/^\/api\/[\w\-.]+(\/[\w\-.]+)*$/.test(props.ep.path) ||
+           props.ep.code.trim().length === 0;
   }
 
   async function handleSave(event) {
@@ -111,8 +112,8 @@ export default function Endpoint(props) {
     event.reset();
   }
 
-  function canDelete() {
-    return !saving;
+  function deleteDisabled() {
+    return saving;
   }
 
   async function handleDelete(event) {
@@ -124,8 +125,8 @@ export default function Endpoint(props) {
   }
 
   return (
-    <div className="Endpoint">
-      <h2>
+    <div className="endpoint">
+      <div className="header">
         <select value={props.ep.method}
                 onChange={handleMethodChange}>
           <option value="GET">GET</option>
@@ -144,15 +145,15 @@ export default function Endpoint(props) {
                onChange={handlePathChange}
         />
         <Button onClick={handleSave}
-                disabled={!canSave()}>
+                disabled={saveDisabled()}>
           Save
         </Button>
         <Button onClick={handleDelete}
-                disabled={!canDelete()}
+                disabled={deleteDisabled()}
                 className="warn">
           Delete
         </Button>
-      </h2>
+      </div>
       <div className="code">
         <div>async (req, res, next) => &#123;</div>
         <div className="editor" ref={editorRef}></div>

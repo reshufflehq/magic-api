@@ -4,9 +4,9 @@ import './Button.css';
 export default function Button(props) {
 
   const interval = useRef();
-  const frame = useRef();
-  const [ spinner, setSpinner ] = useState();
-  const SPINNER = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏';
+  const index = useRef();
+  const [spinner, setSpinner] = useState();
+  const frames = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏';
 
   function reset() {
     if (interval.current) {
@@ -18,22 +18,24 @@ export default function Button(props) {
 
   function handleClick(event) {
     interval.current = setInterval(() => {
-      frame.current = (frame.current + 1) % SPINNER.length;
-      setSpinner(SPINNER.charAt(frame.current));
+      index.current = (index.current + 1) % frames.length;
+      setSpinner(frames.charAt(index.current));
     }, 50);
 
-    setSpinner(SPINNER.charAt(frame.current = 0));
+    setSpinner(frames.charAt(index.current = 0));
 
     props.onClick({ target: event.target, reset });
   }
 
+  const cls = `button ${spinner ? 'spinning' : ''} ${props.className}`;
+
   return (
-    <button className={`Button ${spinner ? 'spinning' : ''} ${props.className}`}
+    <button className={cls}
             disabled={props.disabled || spinner}
             onClick={handleClick}
     >
       {props.children}
-      { spinner &&
+      {spinner &&
         <span className="spinner">
           {spinner}
         </span>

@@ -44,17 +44,15 @@ const STATUS_IS_LOADED = s => (
 );
 
 export default function Endpoints(props) {
-  const [ saved, setSaved ] = useState(STATUS_INIT);
-  const [ endpoints, setEndpoints ] = useState();
+  const [saved, setSaved] = useState(STATUS_INIT);
+  const [endpoints, setEndpoints] = useState();
 
   useEffect(() => {
     if (STATUS_IS_INIT(saved)) {
       endpointsList()
         .then(eps => {
           const svs = {};
-          for (const ep of eps) {
-            svs[ep.uid] = new EP(ep);
-          };
+          eps.map(ep => svs[ep.uid] = new EP(ep));
           setSaved(svs);
         })
         .catch(e => {
@@ -166,7 +164,7 @@ export default function Endpoints(props) {
   }
 
   return (
-    <div className="Endpoints">
+    <div className="endpoints">
       {endpoints.map((ep, i) =>
         <Endpoint key={i}
                   ep={ep}

@@ -48,7 +48,7 @@ export async function endpointsSave(ep) {
   )));
   if (1 < oldies.length) {
     console.error(`endpointsSave: uid ${uid} not unique:`, oldies);
-    return `Error deleting endpoint. Please contact admin`;
+    return `Error saving endpoint. Please contact admin`;
   }
   if (oldies.length) {
     await db.remove(oldies[0].key);
@@ -66,7 +66,7 @@ export async function endpointsSave(ep) {
 
   if (oldUID) {
     console.error(`endpointsSave: route ${route} used by uid ${oldUID} not ${ep.uid}`);
-    return `Error deleting endpoint. Please reload`;
+    return `Error saving endpoint. Duplicate route.`;
   };
 }
 
