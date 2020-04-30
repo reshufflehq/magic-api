@@ -1,3 +1,5 @@
+# We have terminated the backend for this project.  Old Reshuffle projects can no longer be deployed.
+
 <p align="center">
   <img src="./magic-api.png">
 </p>
